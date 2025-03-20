@@ -1,11 +1,8 @@
 part of 'home_bloc.dart';
 
-@immutable
-abstract class HomeEvent {
-  const HomeEvent();
-}
+abstract class HomeEvent {}
 
-class GetInitEvent extends HomeEvent {}
+class LoadTasks extends HomeEvent {}
 
 class AddTask extends HomeEvent {
   final TaskModel task;

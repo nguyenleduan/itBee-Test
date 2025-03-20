@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:itbeesolutionstest/screens/welcome/bloc/welcome_bloc.dart';
@@ -16,7 +15,7 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  WelcomeBloc _bloc = WelcomeBloc();
+  final WelcomeBloc _bloc = WelcomeBloc();
   @override
   void initState() {
     _bloc.add(GetInitEvent());

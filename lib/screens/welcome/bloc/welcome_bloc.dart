@@ -1,6 +1,5 @@
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,8 +18,8 @@ class WelcomeBloc extends Bloc<WelcomeEvent,WelcomeState> {
   void _init(GetInitEvent event, Emitter<WelcomeState> emit) async {
     try {
       emit(InitState());
-     await Timer(Duration(seconds: 3), () {
-        router.goNamed('HomeScreen');
+     Timer(Duration(seconds: 3), () {
+        router.goNamed('TaskScreen');
       });
     } catch (e) {
       print(e);

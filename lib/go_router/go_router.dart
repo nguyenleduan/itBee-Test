@@ -18,8 +18,8 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const WelcomeScreen(),
     ),
     GoRoute(
-      name: 'HomeScreen',
-      path: '/HomeScreen',
+      name: 'TaskScreen',
+      path: '/TaskScreen',
       builder: (context, state) => const HomeScreen(),
     ),
 //     GoRoute(name: 'LoginScreen', path: '/LoginScreen', builder: (context, state){
