@@ -15,16 +15,16 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  final WelcomeBloc _bloc = WelcomeBloc();
+    WelcomeBloc _bloc = WelcomeBloc();
   @override
-  void initState() {
-    _bloc.add(GetInitEvent());
+  void initState(){
     super.initState();
+    _bloc.add(GetInitEvent());
   }
   @override
   void dispose() {
-    _bloc.close();
     super.dispose();
+    _bloc.close();
   }
   @override
   Widget build(BuildContext context) {

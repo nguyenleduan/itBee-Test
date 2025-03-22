@@ -4,6 +4,8 @@ abstract class HomeEvent {}
 
 class LoadTasks extends HomeEvent {}
 
+class AddTest extends HomeEvent {}
+
 class AddTask extends HomeEvent {
   final TaskModel task;
   AddTask(this.task);

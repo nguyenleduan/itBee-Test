@@ -10,7 +10,6 @@ part 'welcome_state.dart';
 part 'welcome_event.dart';
 
 class WelcomeBloc extends Bloc<WelcomeEvent,WelcomeState> {
-
   WelcomeBloc() : super(InitState()) {
     on<GetInitEvent>(_init);
   }
