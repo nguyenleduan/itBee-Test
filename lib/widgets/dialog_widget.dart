@@ -11,6 +11,28 @@ class DialogWidget {
 
   static DialogWidget get instance => _instance;
 
+  Future<bool?> showYesNoDialog(BuildContext context, String title, String message) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+          content: Text(message),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false), // Trả về false khi chọn No
+              child: Text("No", style: TextStyle(color: Colors.red)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true), // Trả về true khi chọn Yes
+              child: Text("Yes", style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        );
+      },
+    );
+  }
   void popupHandTask(
       BuildContext context,Function(int id,String title, String description, String date, String priority)
           onCreate ,{TaskModel? task} ) {

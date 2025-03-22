@@ -2,7 +2,10 @@ part of 'home_bloc.dart';
 
 abstract class HomeEvent {}
 
-class LoadTasks extends HomeEvent {}
+class LoadTasks extends HomeEvent {
+    int? taskId;
+  LoadTasks({this.taskId});
+}
 
 class AddTest extends HomeEvent {}
 

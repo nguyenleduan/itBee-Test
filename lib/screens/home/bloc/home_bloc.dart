@@ -22,20 +22,26 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
   void _onLoadTasks(LoadTasks event, Emitter<HomeState> emit) async {
     final tasks = await dbHelper.getAllTasks();
-    taskSelectIndex = -1;
+    if(event.taskId != null){
+      taskSelectIndex = event.taskId ?? -1;
+    }else{
+      taskSelectIndex = -1;
+    }
     emit(TaskLoaded(tasks));
   }
 
   void _onAddTask(AddTask event, Emitter<HomeState> emit) async {
-    await dbHelper.insertTask(event.task) ;
-    taskSelectIndex = -1;
-    add(LoadTasks());
+    await dbHelper.insertTask(event.task).then((value) {
+      emit(AddSuccess());
+      add(LoadTasks(taskId: value));
+    },);
   }
 
   void _onUpdateTask(UpdateTask event, Emitter<HomeState> emit) async {
     await dbHelper.updateTask(event.task).then((value) async {
       final tasks = await dbHelper.getAllTasks();
       taskSelectIndex = event.task.id ?? -1;
+      emit(UpdateSuccess());
       emit(TaskLoaded(tasks));
     },);
   }
@@ -44,15 +50,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     await dbHelper.updateDoneTask(event.task).then((value) async {
       final tasks = await dbHelper.getAllTasks();
       taskSelectIndex = event.task.id ?? -1;
+      emit(UpdateSuccess());
       emit(TaskLoaded(tasks));
     },);
   }
 
   void _onDeleteTask(DeleteTask event, Emitter<HomeState> emit) async {
-    add(LoadTasks());
     await dbHelper.deleteTask(event.id).then((value) async {
       final tasks = await dbHelper.getAllTasks();
       taskSelectIndex =  -1;
+      emit(DeleteSuccess());
       emit(TaskLoaded(tasks));
     },);
   }

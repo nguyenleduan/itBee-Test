@@ -8,3 +8,7 @@ class TaskLoaded extends HomeState {
   final List<TaskModel> tasks;
   TaskLoaded(this.tasks);
 }
+
+class UpdateSuccess extends HomeState {}
+class AddSuccess extends HomeState {}
+class DeleteSuccess extends HomeState {}

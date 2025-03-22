@@ -10,6 +10,7 @@ import 'package:itbeesolutionstest/utils/size_utils.dart';
 import 'package:search_app_bar_page/search_app_bar_page.dart';
 
 import '../../widgets/dialog_widget.dart';
+import '../../widgets/snack_bar_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,7 +43,17 @@ class _HomeScreen extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       bloc: _bloc,
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(state is UpdateSuccess){
+          SnackBarHelper.showSnackBar(context, 'Update Task Successfully!');
+        }
+        if(state is AddSuccess){
+          SnackBarHelper.showSnackBar(context, 'Create Task Successfully!');
+        }
+        if(state is DeleteSuccess){
+          SnackBarHelper.showSnackBar(context, 'Delete Task Successfully!');
+        }
+      },
       builder: (context, state) {
         if (state is TaskLoaded) {
           return Scaffold(
@@ -106,7 +117,7 @@ class _HomeScreen extends State<HomeScreen> {
     List<AccordionSection> sections = [];
     for (var item in tasks) {
       sections.add(AccordionSection(
-          isOpen: item.id == _bloc.taskSelectIndex,
+          isOpen: _bloc.taskSelectIndex == -1 ? true: item.id == _bloc.taskSelectIndex,
           contentVerticalPadding: 20,
           leftIcon: const Icon(Icons.note_alt, color: Colors.white),
           header: Row(
@@ -202,6 +213,7 @@ class _HomeScreen extends State<HomeScreen> {
                               createdAt: DateTime.now().toIso8601String(),
                               updatedAt: DateTime.now().toIso8601String(),
                             );
+
                             _bloc.add(UpdateTask(taskUpdate));
                           },task: item);
                         },
@@ -221,9 +233,12 @@ class _HomeScreen extends State<HomeScreen> {
                         padding: EdgeInsets.zero,
                         iconSize: 20,
                         icon: const Icon(Icons.delete, color: Colors.white),
-                        onPressed: () {
+                        onPressed: () async {
 
-                          _bloc.add(DeleteTask(item.id!));
+                          bool? result = await DialogWidget.instance.showYesNoDialog(context, 'You Sure?', 'Are you sure you want to delete?');
+                          if (result == true) {
+                            _bloc.add(DeleteTask(item.id!));
+                          }
                         },
                       ),
                     ),
