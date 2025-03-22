@@ -213,7 +213,6 @@ class _HomeScreen extends State<HomeScreen> {
                               createdAt: DateTime.now().toIso8601String(),
                               updatedAt: DateTime.now().toIso8601String(),
                             );
-
                             _bloc.add(UpdateTask(taskUpdate));
                           },task: item);
                         },
@@ -234,7 +233,6 @@ class _HomeScreen extends State<HomeScreen> {
                         iconSize: 20,
                         icon: const Icon(Icons.delete, color: Colors.white),
                         onPressed: () async {
-
                           bool? result = await DialogWidget.instance.showYesNoDialog(context, 'You Sure?', 'Are you sure you want to delete?');
                           if (result == true) {
                             _bloc.add(DeleteTask(item.id!));

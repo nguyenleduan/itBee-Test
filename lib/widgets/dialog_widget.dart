@@ -21,11 +21,11 @@ class DialogWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context, false), // Trả về false khi chọn No
+              onPressed: () => Navigator.pop(context, false),
               child: Text("No", style: TextStyle(color: Colors.red)),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, true), // Trả về true khi chọn Yes
+              onPressed: () => Navigator.pop(context, true),
               child: Text("Yes", style: TextStyle(color: Colors.blue)),
             ),
           ],
@@ -76,7 +76,7 @@ class DialogWidget {
                       child: TextField(
                         controller: nameController,
                         decoration: InputDecoration(
-                          border: InputBorder.none, // Xóa border mặc định
+                          border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
                         ),
@@ -168,7 +168,7 @@ class DialogWidget {
                         backgroundColor: ColorConstant.welcomeBack,
                         minimumSize: Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Bo góc nút
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: Text(task!= null ? "Update Task" : "Create Task"),
@@ -194,20 +194,20 @@ class DialogWidget {
         SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white, // Background trắng
-            borderRadius: BorderRadius.circular(10), // Bo góc
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1), // Màu bóng
-                blurRadius: 10, // Độ mờ của bóng
-                spreadRadius: 2, // Độ lan của bóng
-                offset: Offset(0, 4), // Dịch chuyển bóng xuống dưới
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 2,
+                offset: Offset(0, 4),
               ),
             ],
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
-            // Khoảng cách nội dung
+
             child: child,
           ),
         ),
