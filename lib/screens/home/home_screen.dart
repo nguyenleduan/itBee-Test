@@ -9,6 +9,8 @@ import 'package:itbeesolutionstest/utils/color_constant.dart';
 import 'package:itbeesolutionstest/utils/size_utils.dart';
 import 'package:search_app_bar_page/search_app_bar_page.dart';
 
+import '../../widgets/dialog_widget.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -78,16 +80,18 @@ class _HomeScreen extends State<HomeScreen> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                final newTask = TaskModel(
-                  title: 'Công việc ngày mai',
-                  description: 'Mô tả công việc',
-                  status: 0,
-                  dueDate: '2025-03-21',
-                  priority: Priority.high,
-                  createdAt: DateTime.now().toIso8601String(),
-                  updatedAt: DateTime.now().toIso8601String(),
-                );
-                _bloc.add(AddTask(newTask));
+                DialogWidget.instance.popupHandTask(context, (id,title, description, dueDate, priority) {
+                  final newTask = TaskModel(
+                    title: title ?? '',
+                    description: description ?? '',
+                    status: 0,
+                    dueDate: dueDate,
+                    priority: priority == "HIGH" ? Priority.high : Priority.medium,
+                    createdAt: DateTime.now().toIso8601String(),
+                    updatedAt: DateTime.now().toIso8601String(),
+                  );
+                   _bloc.add(AddTask(newTask));
+                });
               },
               child: Icon(Icons.add),
             ),
@@ -102,7 +106,7 @@ class _HomeScreen extends State<HomeScreen> {
     List<AccordionSection> sections = [];
     for (var item in tasks) {
       sections.add(AccordionSection(
-          isOpen: true,
+          isOpen: item.id == _bloc.taskSelectIndex,
           contentVerticalPadding: 20,
           leftIcon: const Icon(Icons.note_alt, color: Colors.white),
           header: Row(
@@ -130,7 +134,7 @@ class _HomeScreen extends State<HomeScreen> {
               Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    'Icons.arrow_upward: Mũi tên hướng lên có thể tượng trưng cho việc "tăng" hoặc "ưu tiên hơn", vì vậy nó phù hợp cho trạng thái MEDIUM.•Icons.arrow_right_alt: đây là biểu tượng mũi tên qua phải, nó sẽ là icon mặc đị',
+                      item.description ?? '',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
@@ -155,18 +159,52 @@ class _HomeScreen extends State<HomeScreen> {
                         ],
                       ),
                     ),
+                    if(item.status !=1)
+                      ...[Container(
+                        width: getSize(30),
+                        height: getSize(30),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.green,
+                        ),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          iconSize: 20,
+                          icon: const Icon(Icons.offline_pin, color: Colors.white),
+                          onPressed: () {
+                            _bloc.add(UpdateDoneTask(item));
+                          },
+                        ),
+                      ),
+                        SizedBox(
+                          width: getSize(15),
+                        ),],
                     Container(
                       width: getSize(30),
                       height: getSize(30),
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.green,
+                        color: Colors.orange,
                       ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 20,
                         icon: const Icon(Icons.edit, color: Colors.white),
-                        onPressed: () {},
+                        onPressed: () {
+                          DialogWidget.instance.popupHandTask(context, (id,title, description, dueDate, priority) {
+                            final taskUpdate = TaskModel(
+                              id: id,
+                              title: title ?? '',
+                              description: description ?? '',
+                              status: 0,
+                              dueDate: dueDate,
+                              priority: priority == "HIGH" ? Priority.high : Priority.medium,
+                              createdAt: DateTime.now().toIso8601String(),
+                              updatedAt: DateTime.now().toIso8601String(),
+                            );
+                            _bloc.add(UpdateTask(taskUpdate));
+                          },task: item);
+                        },
                       ),
                     ),
                     SizedBox(
@@ -183,7 +221,10 @@ class _HomeScreen extends State<HomeScreen> {
                         padding: EdgeInsets.zero,
                         iconSize: 20,
                         icon: const Icon(Icons.delete, color: Colors.white),
-                        onPressed: () {},
+                        onPressed: () {
+
+                          _bloc.add(DeleteTask(item.id!));
+                        },
                       ),
                     ),
                   ],

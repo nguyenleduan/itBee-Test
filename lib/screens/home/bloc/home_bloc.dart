@@ -12,38 +12,48 @@ part 'home_event.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final DatabaseHelper dbHelper = DatabaseHelper();
-
+  int taskSelectIndex = -1;
   HomeBloc() : super(TaskInitial()) {
     on<LoadTasks>(_onLoadTasks);
     on<AddTask>(_onAddTask);
     on<UpdateTask>(_onUpdateTask);
     on<DeleteTask>(_onDeleteTask);
+    on<UpdateDoneTask>(_onUpdateDoneTask);
   }
-  void  _addTaskPushNotyTest(AddTest event, Emitter<HomeState> emit) async {
-    await NotificationService.scheduleNotification(
-      31,
-      "Nhắc nhở công việc",
-      'atest',
-        DateTime.now().add(Duration(minutes: 2)),
-    );
-}
   void _onLoadTasks(LoadTasks event, Emitter<HomeState> emit) async {
     final tasks = await dbHelper.getAllTasks();
+    taskSelectIndex = -1;
     emit(TaskLoaded(tasks));
   }
 
   void _onAddTask(AddTask event, Emitter<HomeState> emit) async {
-    await dbHelper.insertTask(event.task);
+    await dbHelper.insertTask(event.task) ;
+    taskSelectIndex = -1;
     add(LoadTasks());
   }
 
   void _onUpdateTask(UpdateTask event, Emitter<HomeState> emit) async {
-    await dbHelper.updateTask(event.task);
-    add(LoadTasks());
+    await dbHelper.updateTask(event.task).then((value) async {
+      final tasks = await dbHelper.getAllTasks();
+      taskSelectIndex = event.task.id ?? -1;
+      emit(TaskLoaded(tasks));
+    },);
+  }
+
+  void _onUpdateDoneTask(UpdateDoneTask event, Emitter<HomeState> emit) async {
+    await dbHelper.updateDoneTask(event.task).then((value) async {
+      final tasks = await dbHelper.getAllTasks();
+      taskSelectIndex = event.task.id ?? -1;
+      emit(TaskLoaded(tasks));
+    },);
   }
 
   void _onDeleteTask(DeleteTask event, Emitter<HomeState> emit) async {
-    await dbHelper.deleteTask(event.id);
     add(LoadTasks());
+    await dbHelper.deleteTask(event.id).then((value) async {
+      final tasks = await dbHelper.getAllTasks();
+      taskSelectIndex =  -1;
+      emit(TaskLoaded(tasks));
+    },);
   }
 }

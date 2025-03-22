@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:itbeesolutionstest/config/task_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -38,32 +39,49 @@ class DatabaseHelper {
     );
   }
 
-  // Thêm Task
   Future<int> insertTask(TaskModel task) async {
     final db = await database;
     try {
       return await db.insert('tasks', task.toMap());
     } catch (e) {
-      // Xử lý lỗi ở đây, ví dụ: in log, trả về -1, v.v.
       print('Lỗi khi insert task: $e');
       return -1;
     }
   }
 
-  // Lấy tất cả Task
   Future<List<TaskModel>> getAllTasks() async {
     final db = await database;
     try {
       final List<Map<String, dynamic>> maps = await db.query('tasks');
-      return List.generate(maps.length, (i) => TaskModel.fromMap(maps[i]));
+      List<TaskModel> tasks = List.generate(
+          maps.length, (i) => TaskModel.fromMap(maps[i]));
+      tasks.sort((a, b) {
+        DateTime now = DateTime.now();
+        String formattedNow = DateFormat('dd/MM/yyyy').format(now);
+
+        if(a.dueDate == '' && b.dueDate == ''){
+          return 0;
+        } else if(a.dueDate == ''){
+          return 1;
+        } else if(b.dueDate == ''){
+          return -1;
+        }
+
+        try {
+          DateTime dateA = DateFormat('dd/MM/yyyy').parse(a.dueDate);
+          DateTime dateB = DateFormat('dd/MM/yyyy').parse(b.dueDate);
+          return dateA.compareTo(dateB);
+        } catch (e) {
+          return 0;
+        }
+      });
+
+      return tasks;
     } catch (e) {
-      // Xử lý lỗi ở đây
-      print('Lỗi khi lấy tất cả tasks: $e');
-      return []; // Trả về danh sách rỗng nếu có lỗi
+      return [];
     }
   }
 
-  // Cập nhật Task
   Future<int> updateTask(TaskModel task) async {
     final db = await database;
     try {
@@ -74,13 +92,25 @@ class DatabaseHelper {
         whereArgs: [task.id],
       );
     } catch (e) {
-      // Xử lý lỗi ở đây
-      print('Lỗi khi update task: $e');
       return -1;
     }
   }
 
-  // Xóa Task
+  Future<int> updateDoneTask(TaskModel task) async {
+    final db = await database;
+    task.status = 1;
+    try {
+      return await db.update(
+        'tasks',
+        task.toMap(),
+        where: 'id = ?',
+        whereArgs: [task.id],
+      );
+    } catch (e) {
+      return -1;
+    }
+  }
+
   Future<int> deleteTask(int id) async {
     final db = await database;
     try {
@@ -90,8 +120,6 @@ class DatabaseHelper {
         whereArgs: [id],
       );
     } catch (e) {
-      // Xử lý lỗi ở đây
-      print('Lỗi khi delete task: $e');
       return -1;
     }
   }
@@ -105,6 +133,7 @@ class DatabaseHelper {
     try {
       await db.execute('DROP TABLE IF EXISTS tasks');
     } catch (e) {
+      //
     }
   }
 }

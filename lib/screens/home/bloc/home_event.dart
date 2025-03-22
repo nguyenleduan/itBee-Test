@@ -15,6 +15,10 @@ class UpdateTask extends HomeEvent {
   final TaskModel task;
   UpdateTask(this.task);
 }
+class UpdateDoneTask extends HomeEvent {
+  final TaskModel task;
+  UpdateDoneTask(this.task);
+}
 
 class DeleteTask extends HomeEvent {
   final int id;
